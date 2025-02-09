@@ -32,9 +32,6 @@ public class Exchange extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "symbol", nullable = true)
-    private String symbol;
-
     @Column(name = "base_url", nullable = true)
     private String baseUrl;
 
