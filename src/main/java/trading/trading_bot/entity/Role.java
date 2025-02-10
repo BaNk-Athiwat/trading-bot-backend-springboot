@@ -4,6 +4,8 @@ import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import trading.trading_bot.entity.enums.ERole;
 
 @Entity
 @Getter
@@ -28,8 +31,9 @@ public class Role extends BaseEntity {
     @Column(name = "role_id", updatable = false, nullable = false)
     private Long roleId;
 
-    @Column(nullable = false, unique = true)
-    private String name;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, unique = true, length = 50)
+    private ERole name;
 
     @Column(nullable = false, columnDefinition = "boolean default true")
     private Boolean enable;
