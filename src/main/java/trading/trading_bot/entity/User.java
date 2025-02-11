@@ -31,6 +31,9 @@ public class User extends BaseEntity {
     @Column(name = "user_uuid", updatable = false, nullable = false)
     private UUID userUuid;
 
+    @Column(name = "username", nullable = false, unique = true, length = 20)
+    private String username;
+
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
