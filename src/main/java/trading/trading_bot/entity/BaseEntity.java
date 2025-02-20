@@ -1,6 +1,6 @@
 package trading.trading_bot.entity;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -20,9 +20,9 @@ public abstract class BaseEntity {
 
     @CreatedDate
     @Column(name = "created_date", nullable = false, updatable = false)
-    private LocalDateTime createdDate;
+    private OffsetDateTime createdDate;
 
     @LastModifiedDate
     @Column(name = "updated_date")
-    private LocalDateTime updatedDate;
+    private OffsetDateTime updatedDate;
 }
