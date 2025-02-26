@@ -1,4 +1,4 @@
-package trading.trading_bot.service.impl;
+package trading.trading_bot.security;
 
 import java.util.ArrayList;
 import java.util.Collection;

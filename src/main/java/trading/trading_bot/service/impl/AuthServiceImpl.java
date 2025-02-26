@@ -9,7 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import trading.trading_bot.config.util.JwtTokenProvider;
 import trading.trading_bot.entity.Role;
 import trading.trading_bot.entity.User;
 import trading.trading_bot.entity.enums.ERole;
@@ -19,6 +18,7 @@ import trading.trading_bot.model.request.SignupRequestModel;
 import trading.trading_bot.model.response.JwtResponseModel;
 import trading.trading_bot.repository.RoleRepository;
 import trading.trading_bot.repository.UserRepository;
+import trading.trading_bot.security.jwt.JwtTokenProvider;
 import trading.trading_bot.service.AuthServiceInterface;
 
 @Service

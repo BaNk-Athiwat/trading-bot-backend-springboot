@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class JwtResponseModel {
     private String token;
-    private String type = "Bearer ";
+    private String type = "Bearer";
 
     public JwtResponseModel(String token) {
         this.token = token;

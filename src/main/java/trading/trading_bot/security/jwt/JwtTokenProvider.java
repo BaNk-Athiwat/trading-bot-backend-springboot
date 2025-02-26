@@ -1,4 +1,4 @@
-package trading.trading_bot.config.util;
+package trading.trading_bot.security.jwt;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -44,7 +44,6 @@ public class JwtTokenProvider {
             return true;
         } catch (Exception e) {
             log.error("Invalid JWT token: {}", e.getMessage());
-            // return false;
             throw new Exception("Invalid JWT token.");
         }
     }

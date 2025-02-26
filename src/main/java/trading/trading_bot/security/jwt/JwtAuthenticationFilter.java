@@ -1,4 +1,4 @@
-package trading.trading_bot.config.security;
+package trading.trading_bot.security.jwt;
 
 import java.io.IOException;
 
@@ -19,7 +19,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
-import trading.trading_bot.config.util.JwtTokenProvider;
 import trading.trading_bot.model.response.ErrorResponseModel;
 
 @Log4j2
