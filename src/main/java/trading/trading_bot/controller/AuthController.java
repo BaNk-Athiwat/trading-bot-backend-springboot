@@ -19,11 +19,11 @@ import trading.trading_bot.service.AuthServiceInterface;
 public class AuthController {
 
     @Autowired
-    private AuthServiceInterface authServiceInterface;
+    private AuthServiceInterface authService;
 
     @PostMapping("/signup")
     public ResponseEntity<?> register(@RequestBody SignupRequestModel req) {
-        UserDetailsModel result = authServiceInterface.signup(req);
+        UserDetailsModel result = authService.signup(req);
         ApiResponseModel res = new ApiResponseModel();
         res.setStatus(200);
         res.setMessage("User registered successfully.");
@@ -33,7 +33,7 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> login(@RequestBody SigninRequestModel req) {
-        JwtResponseModel result = authServiceInterface.signin(req);
+        JwtResponseModel result = authService.signin(req);
         ApiResponseModel res = new ApiResponseModel();
         res.setStatus(200);
         res.setMessage("User logined successfully.");
