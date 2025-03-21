@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import trading.trading_bot.entity.Role;
 import trading.trading_bot.entity.User;
 import trading.trading_bot.entity.enums.ERole;
-import trading.trading_bot.model.UserDetailsModel;
+import trading.trading_bot.model.UserModel;
 import trading.trading_bot.model.request.SigninRequestModel;
 import trading.trading_bot.model.request.SignupRequestModel;
 import trading.trading_bot.model.response.JwtResponseModel;
@@ -41,7 +41,7 @@ public class AuthServiceImpl implements AuthServiceInterface {
     JwtTokenProvider jwtProvider;
 
     @Override
-    public UserDetailsModel signup(SignupRequestModel req) {
+    public UserModel signup(SignupRequestModel req) {
 
         if (userRepository.existsByUsername(req.getUsername())) {
             throw new RuntimeException("Username already exists.");
@@ -77,7 +77,7 @@ public class AuthServiceImpl implements AuthServiceInterface {
         user.setEnable(true);
         user.setRole(userRole);
         User saveUser = userRepository.save(user);
-        UserDetailsModel result = new UserDetailsModel(saveUser);
+        UserModel result = new UserModel(saveUser);
         return result;
     }
 

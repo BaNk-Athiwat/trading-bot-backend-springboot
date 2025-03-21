@@ -1,14 +1,13 @@
 package trading.trading_bot.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import trading.trading_bot.entity.Exchange;
-import trading.trading_bot.entity.Key;
 import trading.trading_bot.model.ExchangeModel;
 import trading.trading_bot.model.KeyModel;
 import trading.trading_bot.repository.ExchangeRepository;
@@ -25,32 +24,25 @@ public class ExchangeServiceImpl implements ExchangeServiceInterface {
     KeyServiceInterface keyService;
 
     @Override
-    public List<ExchangeModel> getAllConnection(UUID userUuid) {
-        List<Key> keyEnList = keyService.getKeysByUserUuid(userUuid);
-        List<ExchangeModel> exchangeModelList = new ArrayList<>();
+    public List<ExchangeModel> getAllExchangeConnection(UUID userUuid) {
 
-        keyEnList.forEach(key -> {
-            UUID keyUuid = key.getKeyUuid();
-            String apiKey = key.getApiKey();
-            String secretKey = key.getSecretKey();
-            Exchange exchange = key.getExchange();
+        List<KeyModel> keyModelList = keyService.getKeysByUserUuid(userUuid);
 
-            UUID exchangeUuid = exchange.getExchangeUuid();
-            String name = exchange.getName();
-            String baseUrl = exchange.getBaseUrl();
-            Boolean enable = exchange.getEnable();
+        List<ExchangeModel> exchangeModelList = keyModelList.stream().map(keyModel -> {
 
-            KeyModel keyModel = new KeyModel(keyUuid, apiKey, secretKey);
+            Exchange exchangeEn = exchangeRepository.findById(UUID.fromString(keyModel.getExchangeUuid()))
+                    .orElseThrow(() -> new RuntimeException(
+                            "Exchange Not Found with exchangeUuid: " + keyModel.getExchangeUuid()));
 
             ExchangeModel exchangeModel = new ExchangeModel(
-                    exchangeUuid,
-                    name,
-                    baseUrl,
-                    enable,
-                    keyModel);
-
-            exchangeModelList.add(exchangeModel);
-        });
+                    exchangeEn.getExchangeUuid().toString(),
+                    exchangeEn.getName(),
+                    exchangeEn.getBaseUrl(),
+                    exchangeEn.getEnable(),
+                    keyModel,
+                    null);
+            return exchangeModel;
+        }).collect(Collectors.toList());
 
         return exchangeModelList;
     }

@@ -1,7 +1,5 @@
 package trading.trading_bot.model;
 
-import java.util.UUID;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
@@ -14,15 +12,10 @@ import lombok.NoArgsConstructor;
 public class KeyModel {
 
     @JsonIgnore
-    UUID keyUuid;
+    String keyUuid;
 
-    String exchange;
+    String userUuid;
+    String exchangeUuid;
     String apiKey;
     String secretKey;
-
-    public KeyModel(UUID keyUuid, String apiKey, String secretKey) {
-        this.keyUuid = keyUuid;
-        this.apiKey = apiKey;
-        this.secretKey = secretKey;
-    }
 }

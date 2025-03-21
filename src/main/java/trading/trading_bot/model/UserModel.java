@@ -8,14 +8,14 @@ import trading.trading_bot.entity.User;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDetailsModel {
+public class UserModel {
     private String username;
     private String firstName;
     private String lastName;
     private String email;
     private String role;
 
-    public UserDetailsModel(User user) {
+    public UserModel(User user) {
         this.username = user.getUsername();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();

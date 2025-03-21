@@ -24,14 +24,14 @@ public class ExchangeController {
     private ExchangeServiceInterface exchangeService;
 
     @GetMapping("/connections")
-    public ResponseEntity<?> getAllConnections() {
+    public ResponseEntity<?> getAllExchangeConnection() {
         UserDetailsImpl userDetailsImpl = (UserDetailsImpl) SecurityContextHolder
                 .getContext()
                 .getAuthentication()
                 .getPrincipal();
         UUID userUuid = userDetailsImpl.getUserUuid();
 
-        List<ExchangeModel> result = exchangeService.getAllConnection(userUuid);
+        List<ExchangeModel> result = exchangeService.getAllExchangeConnection(userUuid);
         ApiResponseModel res = new ApiResponseModel(200, "success", result);
         return ResponseEntity.ok(res);
     }

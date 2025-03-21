@@ -10,100 +10,68 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import trading.trading_bot.model.KeyViewModel;
-import trading.trading_bot.service.TradingServiceInterface;
+import trading.trading_bot.service.BitkubServiceInterface;
 
 @Service
-public class TradingServiceImpl implements TradingServiceInterface {
-
+public class BitkubServiceImpl implements BitkubServiceInterface {
     private static final String BASE_URL = "https://api.bitkub.com";
     private static final String STATUS_URL = "/api/status";
-    private static final String MARKET_TICKER_ENDPOINT = "/api/market/ticker";
     private static final String SERVER_TIME_V3_URL = "/api/v3/servertime";
+    private static final String MARKET_TICKER_ENDPOINT = "/api/v3/market/ticker";
     private static final String BALANCES_URL = "/api/v3/market/balances";
-    private static final String WALLET_URL = "/api/v3/market/wallet";
-
-    private String API_KEY = "";
-    private String API_SECRET = "";
 
     @Autowired
     private RestTemplate restTemplate;
 
-    @Override
-    public Boolean createConnection(KeyViewModel req) {
-        System.out.println("API_KEY: " + API_KEY);
-        System.out.println("API_SECRET: " + API_SECRET);
-        return true;
-    }
+    @Autowired
+    private KeyServiceImpl keyServiceImpl;
 
     @Override
-    public String getStatusData() {
+    public Object getStatus() {
         String url = BASE_URL + STATUS_URL;
-        return restTemplate.getForObject(url, String.class);
+        return restTemplate.getForObject(url, Object.class);
     }
 
     @Override
-    public String getMarketTicker() {
-        String url = BASE_URL + MARKET_TICKER_ENDPOINT;
-        var res = restTemplate.getForObject(url, String.class);
-        System.out.println(res);
-        // return restTemplate.getForObject(url, String.class);
-        return res;
-    }
-
-    @Override
-    public String getServerTimeData() {
+    public Object getServerTime() {
         String url = BASE_URL + SERVER_TIME_V3_URL;
-        return restTemplate.getForObject(url, String.class);
+        return restTemplate.getForObject(url, Object.class);
     }
 
     @Override
-    public String getBalancesData() {
+    public Object getMarketTicker() {
+        String url = BASE_URL + MARKET_TICKER_ENDPOINT;
+        return restTemplate.getForObject(url, Object.class);
+    }
+
+    @Override
+    public Object getBalances() {
         String url = BASE_URL + BALANCES_URL;
-        return restTemplate.getForObject(url, String.class);
-    }
-
-    @Override
-    public String getWalletData() {
-        System.out.println("API_KEY1: " + API_KEY);
-        System.out.println("API_SECRET1: " + API_SECRET);
-        String timestamp = getServerTimeV3();
-        String method = "POST";
         Map<String, Object> payload = new HashMap<>();
-        String message = timestamp + method + WALLET_URL + payload;
-        String signature = generateSignature(message);
-        System.out.println(
-                "Timestamp: " + timestamp + ", Method: " + method + ", Payload: " + payload + ", Message: " + message);
-        System.out.println("Signature: " + signature);
+        String timestamp = this.getServerTime().toString();
+        String msg = timestamp + "POST" + BALANCES_URL + payload;
+        String signature = generateSignature(msg);
+        System.out.println("timestamp: " + timestamp);
+        System.out.println("msg: " + msg);
+        System.out.println("signature: " + signature);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Accept", "application/json");
         headers.set("Content-Type", "application/json");
-        headers.set("X-BTK-APIKEY", API_KEY);
+        headers.set("X-BTK-APIKEY", keyServiceImpl.getKey().getApiKey());
         headers.set("X-BTK-TIMESTAMP", timestamp);
         headers.set("X-BTK-SIGN", signature);
 
-        // HttpEntity<String> entity = new HttpEntity<>(payload, headers);
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(payload, headers);
-        String url = BASE_URL + WALLET_URL;
 
-        ResponseEntity<String> response = restTemplate.exchange(
+        return restTemplate.exchange(
                 url,
                 HttpMethod.POST,
                 entity,
-                String.class);
-
-        return response.getBody();
-    }
-
-    private String getServerTimeV3() {
-        String url = BASE_URL + SERVER_TIME_V3_URL;
-        String response = restTemplate.getForObject(url, String.class);
-        return response;
+                Object.class).getBody();
     }
 
     private String generateSignature(String message) {
@@ -112,7 +80,8 @@ public class TradingServiceImpl implements TradingServiceInterface {
             Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
 
             // สร้าง SecretKeySpec โดยใช้ API_SECRET และระบุว่าใช้ HMAC SHA-256
-            SecretKeySpec secret_key = new SecretKeySpec(API_SECRET.getBytes(), "HmacSHA256");
+            SecretKeySpec secret_key = new SecretKeySpec(keyServiceImpl.getKey().getSecretKey().getBytes(),
+                    "HmacSHA256");
 
             // กำหนด secret key ให้กับ Mac instance
             sha256_HMAC.init(secret_key);

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import trading.trading_bot.model.UserDetailsModel;
+import trading.trading_bot.model.UserModel;
 import trading.trading_bot.model.request.SigninRequestModel;
 import trading.trading_bot.model.request.SignupRequestModel;
 import trading.trading_bot.model.response.ApiResponseModel;
@@ -23,7 +23,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> register(@RequestBody SignupRequestModel req) {
-        UserDetailsModel result = authService.signup(req);
+        UserModel result = authService.signup(req);
         ApiResponseModel res = new ApiResponseModel();
         res.setStatus(200);
         res.setMessage("User registered successfully.");

@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/trading/**").hasRole("USER")
+                        .requestMatchers("/api/v1/bitkub/**").hasRole("USER")
                         .requestMatchers("/api/v1/exchange/**").hasAnyRole("ADMIN", "USER")
                         .anyRequest().denyAll())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

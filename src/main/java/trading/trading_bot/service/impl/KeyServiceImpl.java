@@ -2,6 +2,7 @@ package trading.trading_bot.service.impl;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,17 +27,29 @@ public class KeyServiceImpl implements KeyServiceInterface {
         UUID userUuid = userDetailsImpl.getUserUuid();
         UUID exchangeUuid = UUID.fromString("a");
         Key key = keyRepository.findByUser_UserUuidAndExchange_ExchangeUuid(userUuid, exchangeUuid);
-        KeyModel keyModel = new KeyModel(
-                key.getKeyUuid(),
-                key.getExchange().getName(),
-                key.getApiKey(),
-                key.getSecretKey());
+        // KeyModel keyModel = new KeyModel(
+        // key.getKeyUuid(),
+        // key.getExchange().getName(),
+        // key.getApiKey(),
+        // key.getSecretKey());
+        KeyModel keyModel = new KeyModel();
         return keyModel;
     }
 
     @Override
-    public List<Key> getKeysByUserUuid(UUID userUuid) {
-        return keyRepository.findByUser_UserUuid(userUuid);
+    public List<KeyModel> getKeysByUserUuid(UUID userUuid) {
+        List<Key> keyEnList = keyRepository.findByUser_UserUuid(userUuid);
+        List<KeyModel> keyModelList = keyEnList.stream().map(keyEn -> {
+            KeyModel keyModel = new KeyModel(
+                    keyEn.getKeyUuid().toString(),
+                    keyEn.getUser().getUserUuid().toString(),
+                    keyEn.getExchange().getExchangeUuid().toString(),
+                    keyEn.getApiKey(),
+                    keyEn.getSecretKey());
+            return keyModel;
+        }).collect(Collectors.toList());
+
+        return keyModelList;
 
     }
 }
