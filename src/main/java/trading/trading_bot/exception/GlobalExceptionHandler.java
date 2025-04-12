@@ -11,6 +11,14 @@ import trading.trading_bot.model.response.ErrorResponseModel;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Object> handleResourceNotFound(ResourceNotFoundException ex) {
+        ErrorResponseModel res = new ErrorResponseModel(
+                HttpStatus.NOT_FOUND.value(),
+                ex.getClass().getName() + ": " + ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
+    }
+
     @ExceptionHandler(AuthorizationDeniedException.class)
     public ResponseEntity<Object> handleAccessDeniedException(AuthorizationDeniedException ex) {
         ErrorResponseModel res = new ErrorResponseModel(

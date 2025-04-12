@@ -40,6 +40,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/bitkub/**").hasRole("USER")
                         .requestMatchers("/api/v1/exchange/**").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/api/v1/key/**").hasAnyRole("ADMIN", "USER")
                         .anyRequest().denyAll())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(ex -> ex
