@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,23 +23,27 @@ public class ExchangeController {
     @Autowired
     private ExchangeServiceInterface exchangeService;
 
-    @GetMapping("/connections")
-    public ResponseEntity<?> getAllExchangeConnection() {
-        UserDetailsImpl userDetailsImpl = (UserDetailsImpl) SecurityContextHolder
+    private UserDetailsImpl getUserDetailsImpl() {
+        return (UserDetailsImpl) SecurityContextHolder
                 .getContext()
                 .getAuthentication()
                 .getPrincipal();
-        UUID userUuid = userDetailsImpl.getUserUuid();
+    }
 
-        List<ExchangeModel> result = exchangeService.getAllExchangeConnection(userUuid);
+    @GetMapping("/exchange-list")
+    public ResponseEntity<?> getExchangeList() {
+        UUID userUuid = getUserDetailsImpl().getUserUuid();
+        List<ExchangeModel> result = exchangeService.getExchangeList(userUuid);
         ApiResponseModel res = new ApiResponseModel(200, "success", result);
         return ResponseEntity.ok(res);
     }
 
-    @PostMapping("/test")
-    public ResponseEntity<?> test() {
-
-        return ResponseEntity.ok(new ApiResponseModel(200, "success", new ExchangeModel()));
+    @GetMapping("/status/{exchangeUuid}")
+    public ResponseEntity<?> getExchangeStatus(@PathVariable String exchangeUuid) {
+        UUID userUuid = getUserDetailsImpl().getUserUuid();
+        ExchangeModel result = exchangeService.getExchangeStatus(userUuid, exchangeUuid);
+        ApiResponseModel res = new ApiResponseModel(200, "success", result);
+        return ResponseEntity.ok(res);
     }
 
 }
