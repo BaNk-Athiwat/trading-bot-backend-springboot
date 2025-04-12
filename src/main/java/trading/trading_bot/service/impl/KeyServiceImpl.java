@@ -48,9 +48,8 @@ public class KeyServiceImpl implements KeyServiceInterface {
     }
 
     @Override
-    public KeyModel insertApiKey(KeyModel keyModel) {
-        User userEn = userRepository.getReferenceById(
-                UUID.fromString(keyModel.getUserUuid()));
+    public KeyModel insertApiKey(UUID userUuid, KeyModel keyModel) {
+        User userEn = userRepository.getReferenceById(userUuid);
         Exchange exchangeEn = exchangeRepository.getReferenceById(
                 UUID.fromString(keyModel.getExchangeUuid()));
 
@@ -64,9 +63,9 @@ public class KeyServiceImpl implements KeyServiceInterface {
     }
 
     @Override
-    public KeyModel updateApiKey(KeyModel keyModel) {
+    public KeyModel updateApiKey(UUID userUuid, KeyModel keyModel) {
         Optional<Key> optKey = keyRepository.findByUser_UserUuidAndExchange_ExchangeUuid(
-                UUID.fromString(keyModel.getUserUuid()),
+                userUuid,
                 UUID.fromString(keyModel.getExchangeUuid()));
 
         if (!optKey.isPresent()) {

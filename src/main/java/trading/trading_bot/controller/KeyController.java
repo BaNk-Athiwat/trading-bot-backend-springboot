@@ -43,8 +43,7 @@ public class KeyController {
     @PostMapping("/api-key")
     public ResponseEntity<?> insertApiKey(@RequestBody KeyModel keyModel) {
         UUID userUuid = getUserDetailsImpl().getUserUuid();
-        keyModel.setUserUuid(userUuid.toString());
-        KeyModel result = keyService.insertApiKey(keyModel);
+        KeyModel result = keyService.insertApiKey(userUuid, keyModel);
         ApiResponseModel res = new ApiResponseModel(200, "success", result != null ? true : false);
         return ResponseEntity.ok(res);
     }
@@ -52,8 +51,7 @@ public class KeyController {
     @PutMapping("/api-key")
     public ResponseEntity<?> updateApiKey(@RequestBody KeyModel keyModel) {
         UUID userUuid = getUserDetailsImpl().getUserUuid();
-        keyModel.setUserUuid(userUuid.toString());
-        KeyModel result = keyService.updateApiKey(keyModel);
+        KeyModel result = keyService.updateApiKey(userUuid, keyModel);
         ApiResponseModel res = new ApiResponseModel(200, "success", result != null ? true : false);
         return ResponseEntity.ok(res);
     }

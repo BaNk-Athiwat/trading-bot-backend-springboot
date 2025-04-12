@@ -8,7 +8,7 @@ public interface KeyServiceInterface {
 
     KeyModel getApiKey(UUID userUuid, UUID exchangeUuid);
 
-    KeyModel insertApiKey(KeyModel keyModel);
+    KeyModel insertApiKey(UUID userUuid, KeyModel keyModel);
 
-    KeyModel updateApiKey(KeyModel keyModel);
+    KeyModel updateApiKey(UUID userUuid, KeyModel keyModel);
 }
