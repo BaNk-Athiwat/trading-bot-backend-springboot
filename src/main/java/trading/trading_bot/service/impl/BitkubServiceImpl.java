@@ -2,6 +2,7 @@ package trading.trading_bot.service.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -13,7 +14,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import trading.trading_bot.model.KeyModel;
 import trading.trading_bot.service.BitkubServiceInterface;
+import trading.trading_bot.service.KeyServiceInterface;
 
 @Service
 public class BitkubServiceImpl implements BitkubServiceInterface {
@@ -27,7 +30,7 @@ public class BitkubServiceImpl implements BitkubServiceInterface {
     private RestTemplate restTemplate;
 
     @Autowired
-    private KeyServiceImpl keyServiceImpl;
+    private KeyServiceInterface keyService;
 
     @Override
     public Object getStatus() {
@@ -48,20 +51,18 @@ public class BitkubServiceImpl implements BitkubServiceInterface {
     }
 
     @Override
-    public Object getBalances() {
+    public Object getBalances(UUID userUuid, UUID exchangeUuid) {
         String url = BASE_URL + BALANCES_URL;
         Map<String, Object> payload = new HashMap<>();
         String timestamp = this.getServerTime().toString();
+        KeyModel keyModel = keyService.getApiKey(userUuid, exchangeUuid);
         String msg = timestamp + "POST" + BALANCES_URL + payload;
-        String signature = generateSignature(msg);
-        System.out.println("timestamp: " + timestamp);
-        System.out.println("msg: " + msg);
-        System.out.println("signature: " + signature);
+        String signature = generateSignature(msg, keyModel.getSecretKey());
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Accept", "application/json");
         headers.set("Content-Type", "application/json");
-        headers.set("X-BTK-APIKEY", keyServiceImpl.getKey().getApiKey());
+        headers.set("X-BTK-APIKEY", keyModel.getApiKey());
         headers.set("X-BTK-TIMESTAMP", timestamp);
         headers.set("X-BTK-SIGN", signature);
 
@@ -74,13 +75,13 @@ public class BitkubServiceImpl implements BitkubServiceInterface {
                 Object.class).getBody();
     }
 
-    private String generateSignature(String message) {
+    private String generateSignature(String message, String secretKey) {
         try {
             // สร้าง instance ของ Mac ที่ใช้ HMAC SHA-256
             Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
 
             // สร้าง SecretKeySpec โดยใช้ API_SECRET และระบุว่าใช้ HMAC SHA-256
-            SecretKeySpec secret_key = new SecretKeySpec(keyServiceImpl.getKey().getSecretKey().getBytes(),
+            SecretKeySpec secret_key = new SecretKeySpec(secretKey.getBytes(),
                     "HmacSHA256");
 
             // กำหนด secret key ให้กับ Mac instance

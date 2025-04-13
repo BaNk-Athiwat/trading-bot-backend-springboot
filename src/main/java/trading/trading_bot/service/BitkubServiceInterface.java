@@ -1,5 +1,7 @@
 package trading.trading_bot.service;
 
+import java.util.UUID;
+
 public interface BitkubServiceInterface {
     public Object getStatus();
 
@@ -7,5 +9,5 @@ public interface BitkubServiceInterface {
 
     public Object getMarketTicker();
 
-    public Object getBalances();
+    public Object getBalances(UUID userUuid, UUID exchangeUuid);
 }
